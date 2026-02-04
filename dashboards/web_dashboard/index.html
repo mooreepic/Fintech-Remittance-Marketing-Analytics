@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Fintech Remittance Marketing Analytics Dashboard | Onuoha Onyekachi</title>
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <style>
+                * { margin: 0; padding: 0; box-sizing: border-box; }
+                body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f0f23; color: #e0e0e0; }
+                .navbar { background: linear-gradient(135deg, #1a1a2e, #16213e); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #0ea5e9; }
+                .navbar h1 { font-size: 1.4em; color: #0ea5e9; }
+                .navbar nav a { color: #94a3b8; text-decoration: none; margin: 0 15px; transition: color 0.3s; }
+                .navbar nav a:hover { color: #0ea5e9; }
+                .hero { background: linear-gradient(135deg, #1e293b, #0f172a); padding: 40px; text-align: center; border-bottom: 1px solid #334155; }
+                .hero h2 { font-size: 2em; margin-bottom: 10px; background: linear-gradient(to right, #0ea5e9, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+                .hero p { color: #94a3b8; font-size: 1.1em; }
+                .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; padding: 30px; }
+                .kpi-card { background: linear-gradient(135deg, #1e293b, #0f172a); border: 1px solid #334155; border-radius: 12px; padding: 25px; text-align: center; transition: transform 0.3s, border-color 0.3s; }
+                .kpi-card:hover { transform: translateY(-5px); border-color: #0ea5e9; }
+                .kpi-card .value { font-size: 2.2em; font-weight: 700; color: #0ea5e9; }
+                .kpi-card .label { color: #94a3b8; margin-top: 8px; font-size: 0.9em; }
+                .kpi-card .change { color: #22c55e; font-size: 0.85em; margin-top: 5px; }
+                .kpi-card .change.negative { color: #ef4444; }
+                .dashboard-section { padding: 30px; }
+                .dashboard-section h3 { color: #0ea5e9; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #334155; }
+                .chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 25px; }
+                .chart-card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 25px; }
+                .chart-card h4 { color: #e2e8f0; margin-bottom: 15px; }
+                .table-container { overflow-x: auto; }
+                table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+                th { background: #0ea5e9; color: white; padding: 12px 15px; text-align: left; font-weight: 600; }
+                td { padding: 12px 15px; border-bottom: 1px solid #334155; }
+                tr:hover td { background: #1e293b; }
+                .rate-badge { padding: 4px 12px; border-radius: 20px; font-size: 0.85em; font-weight: 600; }
+                .rate-best { background: #22c55e20; color: #22c55e; }
+                .rate-mid { background: #f59e0b20; color: #f59e0b; }
+                .rate-low { background: #ef444420; color: #ef4444; }
+                .segment-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
+                .segment-card { background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 20px; text-align: center; }
+                .segment-card .pct { font-size: 2em; font-weight: 700; }
+                .segment-card .name { color: #94a3b8; margin-top: 5px; }
+                .footer { background: #0f172a; border-top: 1px solid #334155; padding: 30px; text-align: center; color: #64748b; }
+                .footer a { color: #0ea5e9; text-decoration: none; }
+                .pills { display: flex; gap: 8px; flex-wrap: wrap; margin: 15px 0; }
+                .pill { padding: 5px 14px; border-radius: 20px; font-size: 0.8em; background: #0ea5e920; color: #0ea5e9; border: 1px solid #0ea5e940; }
+                canvas { max-height: 300px; }
+            </style>
+  </head>
+  <body>
+        <div class="navbar">
+                  <h1>💱 Fintech Remittance Analytics</h1>
+                <nav>
+                              <a href="#overview">Overview</a>a>
+                              <a href="#rates">Rates</a>a>
+                              <a href="#segments">Segments</a>a>
+                              <a href="#digital">Digital</a>a>
+                              <a href="#sentiment">Sentiment</a>a>
+                              <a href="cv.html">CV</a>a>
+                </nav>
+        </div>div>
+
+        <div class="hero">
+                  <h2>GBP → NGN Remittance Market Intelligence</h2>
+                  <p>Competitive analysis of MoneyPoint vs LemFi vs Tap Tap Send vs Revolut vs Remitly</p>
+                <div class="pills">
+                            <span class="pill">Power BI</span>span>
+                            <span class="pill">Python</span>span>
+                            <span class="pill">SQL</span>span>
+                            <span class="pill">NLP Sentiment</span>span>
+                            <span class="pill">K-Means Clustering</span>span>
+                            <span class="pill">Market Research</span>span>
+                </div>div>
+        </div>div>
+  
+      <!-- KPI Section -->
+      <div class="kpi-grid" id="overview">
+              <div class="kpi-card">
+                          <div class="value">£4.2B</div>div>
+                          <div class="label">Total Market Size (GBP-NGN)</div>div>
+                          <div class="change">↑ +18.5% YoY</div>div>
+              </div>div>
+              <div class="kpi-card">
+                          <div class="value">2.1M</div>div>
+                          <div class="label">Active Users in Corridor</div>div>
+                          <div class="change">↑ +24% YoY</div>div>
+              </div>div>
+              <div class="kpi-card">
+                          <div class="value">£385</div>div>
+                          <div class="label">Avg Transfer Amount</div>div>
+                          <div class="change negative">↓ -3.2% QoQ</div>div>
+              </div>div>
+              <div class="kpi-card">
+                          <div class="value">2.3x</div>div>
+                          <div class="label">Avg Monthly Frequency</div>div>
+                          <div class="change">↑ +8% YoY</div>div>
+              </div>div>
+              <div class="kpi-card">
+                          <div class="value">₦1,920</div>div>
+                          <div class="label">Avg GBP/NGN Rate</div>div>
+                          <div class="change">↑ +45% YoY</div>div>
+              </div>div>
+      </div>div>
+  
+      <!-- Market Share & Rate Comparison -->
+      <div class="dashboard-section" id="rates">
+              <h3>📊 Market Share & Exchange Rate Analysis</h3>
+              <div class="chart-grid">
+                          <div class="chart-card">
+                                          <h4>Market Share Distribution</h4>
+                                          <canvas id="marketShareChart"></canvas>canvas>
+                          </div>div>
+                          <div class="chart-card">
+                                          <h4>Exchange Rate Comparison (GBP to NGN)</h4>
+                                          <canvas id="rateChart"></canvas>canvas>
+                          </div>div>
+              </div>div>
+      
+              <div class="chart-card" style="margin-top: 25px;">
+                          <h4>Competitive Comparison Table</h4>
+                          <div class="table-container">
+                                          <table>
+                                                                <thead>
+                                                                                          <tr>
+                                                                                                                        <th>Platform</th>
+                                                                                            <th>Exchange Rate (£1=₦)</th>
+                                                                                            <th>Transfer Fee</th>
+                                                                                            <th>Speed</th>
+                                                                                            <th>App Rating</th>
+                                                                                            <th>Naira for £500</th>
+                                                                                            <th>Rating</th>
+                                                                                          </tr>
+                                                                </thead>
+                                                              <tbody>
+                                                                                        <tr>
+                                                                                                                      <td><strong>Tap Tap Send</strong></td>
+                                                                      <td>₦1,925</td>
+                                                                      <td>£0</td>
+                                                                      <td>Minutes</td>
+                                                                      <td>⭐ 4.6</td>
+                                                                      <td>₦962,500</td>
+                                                                      <td><span class="rate-badge rate-best">Best Value</span>span></td>
+                                                                                        </tr>
+                                                                  <tr>
+                                                                                                <td><strong>MoneyPoint</strong></td>
+                                                                      <td>₦1,920</td>
+                                                                      <td>£1.00</td>
+                                                                      <td>Minutes</td>
+                                                                      <td>⭐ 4.2</td>
+                                                                      <td>₦960,000</td>
+                                                                      <td><span class="rate-badge rate-mid">Good</span>span></td>
+                                                                  </tr>
+                                                                  <tr>
+                                                                                                <td><strong>LemFi</strong></td>
+                                                                      <td>₦1,915</td>
+                                                                      <td>£0-2</td>
+                                                                      <td>Minutes</td>
+                                                                      <td>⭐ 4.5</td>
+                                                                      <td>₦957,500</td>
+                                                                      <td><span class="rate-badge rate-mid">Good</span>span></td>
+                                                                  </tr>
+                                                                  <tr>
+                                                                                                <td><strong>Remitly</strong></td>
+                                                                      <td>₦1,910</td>
+                                                                      <td>£0-3.99</td>
+                                                                      <td>Minutes-Hours</td>
+                                                                      <td>⭐ 4.5</td>
+                                                                      <td>₦955,000</td>
+                                                                      <td><span class="rate-badge rate-mid">Average</span>span></td>
+                                                                  </tr>
+                                                                  <tr>
+                                                                                                <td><strong>Revolut</strong></td>
+                                                                      <td>₦1,890</td>
+                                                                      <td>£0-5</td>
+                                                                      <td>1-3 Days</td>
+                                                                      <td>⭐ 4.7</td>
+                                                                      <td>₦945,000</td>
+                                                                      <td><span class="rate-badge rate-low">Premium</span>span></td>
+                                                                  </tr>
+                                                              </tbody>
+                                          </table>
+                          </div>div>
+              </div>div>
+      </div>div>
+  
+      <!-- Customer Segmentation -->
+      <div class="dashboard-section" id="segments">
+              <h3>👥 Customer Segmentation Analysis</h3>
+              <div class="segment-cards">
+                          <div class="segment-card">
+                                          <div class="pct" style="color: #0ea5e9;">35%</div>div>
+                                          <div class="name">Regular Family Support</div>div>
+                                          <p style="font-size:0.8em; color:#64748b; margin-top:8px;">Monthly £300-500 transfers</p>
+                          </div>div>
+                          <div class="segment-card">
+                                          <div class="pct" style="color: #8b5cf6;">25%</div>div>
+                                          <div class="name">Business/Bulk Senders</div>div>
+                                          <p style="font-size:0.8em; color:#64748b; margin-top:8px;">£1,000-5,000 per transfer</p>
+                          </div>div>
+                          <div class="segment-card">
+                                          <div class="pct" style="color: #f59e0b;">18%</div>div>
+                                          <div class="name">Occasional Senders</div>div>
+                                          <p style="font-size:0.8em; color:#64748b; margin-top:8px;">Holiday/Event based</p>
+                          </div>div>
+                          <div class="segment-card">
+                                          <div class="pct" style="color: #22c55e;">12%</div>div>
+                                          <div class="name">Student Support</div>div>
+                                          <p style="font-size:0.8em; color:#64748b; margin-top:8px;">Tuition & living costs</p>
+                          </div>div>
+                          <div class="segment-card">
+                                          <div class="pct" style="color: #ef4444;">10%</div>div>
+                                          <div class="name">First-time Senders</div>div>
+                                          <p style="font-size:0.8em; color:#64748b; margin-top:8px;">New to UK diaspora</p>
+                          </div>div>
+              </div>div>
+              <div class="chart-grid" style="margin-top: 25px;">
+                          <div class="chart-card">
+                                          <h4>Customer Journey Funnel</h4>
+                                          <canvas id="funnelChart"></canvas>canvas>
+                          </div>div>
+                          <div class="chart-card">
+                                          <h4>Segment Distribution</h4>
+                                          <canvas id="segmentChart"></canvas>canvas>
+                          </div>div>
+              </div>div>
+      </div>div>
+  
+      <!-- Digital Marketing -->
+      <div class="dashboard-section" id="digital">
+              <h3>📱 Digital Marketing Performance</h3>
+              <div class="chart-grid">
+                          <div class="chart-card">
+                                          <h4>Google Trends Interest (12 Months)</h4>
+                                          <canvas id="trendsChart"></canvas>canvas>
+                          </div>div>
+                          <div class="chart-card">
+                                          <h4>App Store Ratings Comparison</h4>
+                                          <canvas id="appRatingsChart"></canvas>canvas>
+                          </div>div>
+              </div>div>
+      </div>div>
+  
+      <!-- Sentiment Analysis -->
+      <div class="dashboard-section" id="sentiment">
+              <h3>💬 Sentiment & Brand Perception</h3>
+              <div class="chart-grid">
+                          <div class="chart-card">
+                                          <h4>Review Sentiment Distribution</h4>
+                                          <canvas id="sentimentChart"></canvas>canvas>
+                          </div>div>
+                          <div class="chart-card">
+                                          <h4>Competitive Radar: Performance Dimensions</h4>
+                                          <canvas id="radarChart"></canvas>canvas>
+                          </div>div>
+              </div>div>
+      </div>div>
+  
+      <div class="footer">
+              <p><strong>Fintech Remittance Marketing Analytics Dashboard</strong>strong></p>
+              <p style="margin-top:10px;">Built by <a href="https://linkedin.com/in/onyekachiprince">Onuoha (Prince) Onyekachi</a>a> | Business Analyst & Data Analyst</p>
+              <p style="margin-top:5px;">MSc Data Analytics | MSc Marketing | SQL, Python, Power BI, Excel</p>
+              <p style="margin-top:10px;"><a href="https://github.com/mooreepic/Fintech-Remittance-Marketing-Analytics">GitHub Repository</a>a></p>
+      </div>div>
+  
+      <script>
+                // Market Share Pie Chart
+                new Chart(document.getElementById('marketShareChart'), {
+                              type: 'doughnut',
+                              data: {
+                                                labels: ['Revolut', 'Remitly', 'LemFi', 'Tap Tap Send', 'MoneyPoint'],
+                                                datasets: [{
+                                                                      data: [28, 22, 19, 17, 14],
+                                                                      backgroundColor: ['#8b5cf6', '#ef4444', '#0ea5e9', '#22c55e', '#f59e0b'],
+                                                                      borderColor: '#0f172a', borderWidth: 3
+                                                }]
+                              },
+                              options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8' } } } }
+                });
+
+                // Exchange Rate Bar Chart
+                new Chart(document.getElementById('rateChart'), {
+                              type: 'bar',
+                              data: {
+                                                labels: ['Tap Tap Send', 'MoneyPoint', 'LemFi', 'Remitly', 'Revolut'],
+                                                datasets: [{
+                                                                      label: 'NGN per £1',
+                                                                      data: [1925, 1920, 1915, 1910, 1890],
+                                                                      backgroundColor: ['#22c55e', '#f59e0b', '#0ea5e9', '#ef4444', '#8b5cf6'],
+                                                                      borderRadius: 8
+                                                }]
+                              },
+                              options: {
+                                                responsive: true,
+                                                scales: { y: { beginAtZero: false, min: 1880, ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }, x: { ticks: { color: '#94a3b8' }, grid: { display: false } } },
+                                                plugins: { legend: { display: false } }
+                              }
+                });
+
+                // Customer Journey Funnel
+                new Chart(document.getElementById('funnelChart'), {
+                              type: 'bar',
+                              data: {
+                                                labels: ['Awareness', 'App Download', 'Registration', 'First Transfer', 'Repeat User', 'Advocate'],
+                                                datasets: [{
+                                                                      label: 'Conversion %',
+                                                                              data: [100, 45, 30, 18, 12, 5],
+                                                                      backgroundColor: ['#0ea5e9', '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7', '#c084fc'],
+                                                                      borderRadius: 6
+                                                }]
+                              },
+                              options: {
+                                                indexAxis: 'y',
+                                                responsive: true,
+                                                scales: { x: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }, y: { ticks: { color: '#94a3b8' }, grid: { display: false } } },
+                                                plugins: { legend: { display: false } }
+                              }
+                });
+
+                // Segment Doughnut
+                new Chart(document.getElementById('segmentChart'), {
+                              type: 'doughnut',
+                              data: {
+                                                labels: ['Regular Family', 'Business/Bulk', 'Occasional', 'Student Support', 'First-time'],
+                                                datasets: [{
+                                                                      data: [35, 25, 18, 12, 10],
+                                                                      backgroundColor: ['#0ea5e9', '#8b5cf6', '#f59e0b', '#22c55e', '#ef4444'],
+                                                                      borderColor: '#0f172a', borderWidth: 3
+                                                }]
+                              },
+                              options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8' } } } }
+                });
+
+                // Google Trends Line Chart
+                new Chart(document.getElementById('trendsChart'), {
+                              type: 'line',
+                              data: {
+                                                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                                                datasets: [
+                                                  { label: 'Revolut', data: [75, 78, 80, 82, 85, 88, 86, 84, 87, 90, 92, 95], borderColor: '#8b5cf6', tension: 0.4, fill: false },
+                                                  { label: 'LemFi', data: [30, 35, 40, 45, 48, 52, 55, 58, 60, 63, 65, 70], borderColor: '#0ea5e9', tension: 0.4, fill: false },
+                                                  { label: 'Tap Tap Send', data: [40, 42, 44, 46, 50, 53, 55, 57, 58, 60, 62, 65], borderColor: '#22c55e', tension: 0.4, fill: false },
+                                                  { label: 'Remitly', data: [50, 52, 48, 55, 58, 60, 57, 62, 65, 63, 68, 70], borderColor: '#ef4444', tension: 0.4, fill: false },
+                                                  { label: 'MoneyPoint', data: [20, 22, 25, 28, 30, 33, 35, 38, 40, 42, 45, 48], borderColor: '#f59e0b', tension: 0.4, fill: false }
+                                                                  ]
+                              },
+                              options: {
+                                                responsive: true,
+                                                scales: { y: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }, x: { ticks: { color: '#94a3b8' }, grid: { display: false } } },
+                                                plugins: { legend: { labels: { color: '#94a3b8' } } }
+                              }
+                });
+
+                // App Ratings
+                new Chart(document.getElementById('appRatingsChart'), {
+                              type: 'bar',
+                              data: {
+                                                labels: ['Revolut', 'Tap Tap Send', 'LemFi', 'Remitly', 'MoneyPoint'],
+                                                datasets: [{
+                                                                      label: 'App Store Rating',
+                                                                      data: [4.7, 4.6, 4.5, 4.5, 4.2],
+                                                                      backgroundColor: ['#8b5cf680', '#22c55e80', '#0ea5e980', '#ef444480', '#f59e0b80'],
+                                                                      borderColor: ['#8b5cf6', '#22c55e', '#0ea5e9', '#ef4444', '#f59e0b'],
+                                                                      borderWidth: 2, borderRadius: 8
+                                                }]
+                              },
+                              options: {
+                                                responsive: true,
+                                                scales: { y: { beginAtZero: false, min: 3.5, max: 5, ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }, x: { ticks: { color: '#94a3b8' }, grid: { display: false } } },
+                                                plugins: { legend: { display: false } }
+                              }
+                });
+
+                // Sentiment Chart
+                new Chart(document.getElementById('sentimentChart'), {
+                              type: 'bar',
+                              data: {
+                                                labels: ['MoneyPoint', 'LemFi', 'Tap Tap Send', 'Revolut', 'Remitly'],
+                                                datasets: [
+                                                  { label: 'Positive', data: [65, 72, 78, 74, 70], backgroundColor: '#22c55e', borderRadius: 4 },
+                                                  { label: 'Neutral', data: [20, 18, 14, 16, 18], backgroundColor: '#f59e0b', borderRadius: 4 },
+                                                  { label: 'Negative', data: [15, 10, 8, 10, 12], backgroundColor: '#ef4444', borderRadius: 4 }
+                                                                  ]
+                              },
+                              options: {
+                                                responsive: true,
+                                                scales: { y: { stacked: true, ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }, x: { stacked: true, ticks: { color: '#94a3b8' }, grid: { display: false } } },
+                                                plugins: { legend: { labels: { color: '#94a3b8' } } }
+                              }
+                });
+
+                // Radar Chart
+                new Chart(document.getElementById('radarChart'), {
+                              type: 'radar',
+                              data: {
+                                                labels: ['Exchange Rate', 'Low Fees', 'Speed', 'UX/App', 'Support', 'Trust'],
+                                                datasets: [
+                                                  { label: 'MoneyPoint', data: [80, 70, 85, 65, 60, 75], borderColor: '#f59e0b', backgroundColor: '#f59e0b20' },
+                                                  { label: 'LemFi', data: [75, 85, 80, 80, 70, 78], borderColor: '#0ea5e9', backgroundColor: '#0ea5e920' },
+                                                  { label: 'Tap Tap Send', data: [90, 95, 80, 75, 65, 72], borderColor: '#22c55e', backgroundColor: '#22c55e20' },
+                                                  { label: 'Revolut', data: [60, 65, 55, 90, 75, 92], borderColor: '#8b5cf6', backgroundColor: '#8b5cf620' },
+                                                  { label: 'Remitly', data: [72, 70, 88, 78, 80, 85], borderColor: '#ef4444', backgroundColor: '#ef444420' }
+                                                                  ]
+                              },
+                              options: {
+                                                responsive: true,
+                                                scales: { r: { ticks: { color: '#94a3b8', backdropColor: 'transparent' }, grid: { color: '#334155' }, pointLabels: { color: '#94a3b8' } } },
+                                                plugins: { legend: { labels: { color: '#94a3b8' } } }
+                              }
+                });
+      </script>
+  </body>
+</html>html>
+      </script></p></strong></td>
+                                                                  </tr></strong></td>
+                                                                  </tr></strong></td>
+                                                                  </tr></strong></td>
+                                                                  </tr></strong></td>
+                                                                                        </tr>
+                                                              </tbody></th></th>
+                                                                                          </tr>
+                                                                </thead>
+                                          </table></p>
+                </nav></h1>
+  </body>
+      </style></title>
+  </head>
