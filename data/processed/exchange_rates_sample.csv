@@ -1,0 +1,26 @@
+date,platform,exchange_rate_ngn,transfer_fee_gbp,transfer_speed,currency_pair
+2025-01-01,MoneyPoint,1918.50,1.00,Minutes,GBP_NGN
+2025-01-01,LemFi,1912.30,1.50,Minutes,GBP_NGN
+2025-01-01,TapTapSend,1923.00,0.00,Minutes,GBP_NGN
+2025-01-01,Revolut,1888.75,3.00,1-3 Days,GBP_NGN
+2025-01-01,Remitly,1908.20,2.99,Minutes,GBP_NGN
+2025-01-08,MoneyPoint,1920.00,1.00,Minutes,GBP_NGN
+2025-01-08,LemFi,1915.50,1.50,Minutes,GBP_NGN
+2025-01-08,TapTapSend,1925.40,0.00,Minutes,GBP_NGN
+2025-01-08,Revolut,1890.00,2.50,1-3 Days,GBP_NGN
+2025-01-08,Remitly,1910.80,2.99,Minutes,GBP_NGN
+2025-01-15,MoneyPoint,1922.30,1.00,Minutes,GBP_NGN
+2025-01-15,LemFi,1917.80,1.00,Minutes,GBP_NGN
+2025-01-15,TapTapSend,1928.10,0.00,Minutes,GBP_NGN
+2025-01-15,Revolut,1892.50,2.50,1-3 Days,GBP_NGN
+2025-01-15,Remitly,1912.40,1.99,Hours,GBP_NGN
+2025-01-22,MoneyPoint,1919.70,1.00,Minutes,GBP_NGN
+2025-01-22,LemFi,1914.20,2.00,Minutes,GBP_NGN
+2025-01-22,TapTapSend,1924.50,0.00,Minutes,GBP_NGN
+2025-01-22,Revolut,1889.30,3.50,1-3 Days,GBP_NGN
+2025-01-22,Remitly,1909.60,2.99,Minutes,GBP_NGN
+2025-01-29,MoneyPoint,1921.80,1.00,Minutes,GBP_NGN
+2025-01-29,LemFi,1916.40,1.50,Minutes,GBP_NGN
+2025-01-29,TapTapSend,1926.70,0.00,Minutes,GBP_NGN
+2025-01-29,Revolut,1891.20,2.50,1-3 Days,GBP_NGN
+2025-01-29,Remitly,1911.30,2.99,Minutes,GBP_NGN
